@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# licensed source font packages (only the WOFF2 web files in public/fonts are committed)
+/לאון/
+/פולין/
+
+# heavy intermediate video (frames in public/hero-seq are generated from it)
+/assets-src/video/*.webm
