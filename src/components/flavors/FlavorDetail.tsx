@@ -67,7 +67,7 @@ export default function FlavorDetail({ flavor }: { flavor: Flavor }) {
   return (
     <>
       <nav aria-label="פירורי לחם" className="py-6 text-sm">
-        <Link href="/flavors" className="font-extrabold underline underline-offset-4">
+        <Link href="/flavors" className="inline-block py-2 font-extrabold underline underline-offset-4">
           → כל הטעמים
         </Link>
       </nav>

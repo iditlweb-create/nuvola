@@ -97,10 +97,10 @@ export default function HeroSequence() {
     };
     // Desktop: pin the hero while the scene opens up. Mobile: scrub as the hero scrolls past.
     const mm = gsap.matchMedia();
-    mm.add("(min-width: 768px)", () => {
+    mm.add("(min-width: 1024px)", () => {
       ScrollTrigger.create({ trigger: ".hero", start: "top top", end: "+=110%", pin: true, scrub: 0.6, refreshPriority: 1, onUpdate });
     });
-    mm.add("(max-width: 767px)", () => {
+    mm.add("(max-width: 1023px)", () => {
       ScrollTrigger.create({ trigger: ".hero-media", start: "top 70%", end: "bottom top", scrub: 0.6, onUpdate });
     });
     ScrollTrigger.refresh();
@@ -115,7 +115,7 @@ export default function HeroSequence() {
   return (
     <div
       ref={wrapRef}
-      className="hero-media relative -mx-4 aspect-video overflow-hidden bg-gradient-to-b from-cloud to-cream [container-type:inline-size] md:absolute md:inset-0 md:-z-10 md:mx-0 md:aspect-auto"
+      className="hero-media relative -mx-4 aspect-video overflow-hidden bg-gradient-to-b from-cloud to-cream [container-type:inline-size] md:-mx-8 lg:absolute lg:inset-0 lg:-z-10 lg:mx-0 lg:aspect-auto"
     >
       {/* Layer 2: looping clouds */}
       <div aria-hidden className="absolute inset-0">

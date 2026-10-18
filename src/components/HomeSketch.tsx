@@ -1,7 +1,5 @@
 "use client";
 /* eslint-disable @next/next/no-img-element */
- 
- 
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
@@ -15,15 +13,10 @@ import SiteHeader from "./site/SiteHeader";
 import SiteFooter from "./site/SiteFooter";
 import { BRANCHES, FLAVORS } from "@/data/site";
 import FlavorTags from "./site/FlavorTags";
+import LabSteps from "./site/LabSteps";
 
 gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP);
 
-const STEPS = [
-  { n: "01", title: "חלב", text: "חלב מקומי מגיע כל בוקר מרפת בגליל, ומתבשל לאט עם סוכר וחלמונים.", color: "var(--color-cloud)", img: "lab-milk", alt: "חלב נשפך מבקבוק זכוכית לסיר נירוסטה" },
-  { n: "02", title: "פיסטוק", text: "קולים, טוחנים ומשמנים את הפיסטוק במעבדה. בלי תמציות ובלי צבע.", color: "var(--color-pistachio)", img: "lab-pistachio", alt: "ידיים טוחנות פיסטוק קלוי במכתש אבן" },
-  { n: "03", title: "הקצפה", text: "הבסיס מתקרר ומוקצף לאט, כדי להכניס בדיוק מספיק אוויר. מכאן הענן.", color: "var(--color-mango)", img: "lab-whip", alt: "בסיס ג׳לטו פיסטוק מוקצף לאט לעננים רכים" },
-  { n: "04", title: "ויטרינה", text: "כל טעם מגיע לוויטרינה באותו בוקר. מה שלא נמכר, לא חוזר מחר.", color: "var(--color-cherry)", img: "lab-vitrine", alt: "ידיים מחליקות מגש ג׳לטו פיסטוק בוויטרינה" },
-];
 
 
 const DROP_DATE = new Date("2026-11-01T10:00:00+02:00");
@@ -82,24 +75,6 @@ export default function HomeSketch() {
           });
         });
 
-        // "How a flavor is born": pinned horizontal scroll, moving right-to-left reading order (RTL)
-        const track = document.querySelector<HTMLElement>(".steps-track");
-        if (track) {
-          const distance = () => track.scrollWidth - window.innerWidth;
-          gsap.to(track, {
-            x: () => distance(),
-            ease: "none",
-            scrollTrigger: {
-              trigger: ".steps",
-              start: "top top",
-              end: () => `+=${distance()}`,
-              pin: true,
-              scrub: 1,
-              invalidateOnRefresh: true,
-            },
-          });
-        }
-
         // Game teaser: scoops drop onto the cone one by one as the section scrolls in
         gsap.from(".tower-scoop", {
           y: -260,
@@ -123,7 +98,7 @@ export default function HomeSketch() {
       <main id="main">
         {/* Hero */}
         <section className="hero relative isolate overflow-hidden bg-cloud">
-          <div className="mx-auto grid min-h-[calc(100svh-6rem)] max-w-7xl items-center gap-8 px-4 py-16 md:grid-cols-2 md:px-8">
+          <div className="mx-auto grid max-w-7xl items-center gap-8 px-4 py-16 md:px-8 lg:min-h-[calc(100svh-6rem)] lg:grid-cols-2">
             <div>
               <p className="hero-fade mb-4 inline-block rounded-full bg-mango px-4 py-1 font-extrabold">מעבדת ג׳לטו · תל אביב, חיפה, ירושלים</p>
               <h1 className="hero-title mb-6">ג׳לטו שנולד בענן</h1>
@@ -163,35 +138,7 @@ export default function HomeSketch() {
           </div>
         </section>
 
-        {/* How a flavor is born — horizontal pinned scroll */}
-        <section className="steps relative h-svh overflow-hidden bg-cream" aria-labelledby="steps-title">
-          <div className="absolute inset-x-0 top-0 z-10 mx-auto max-w-7xl px-4 pt-10 md:px-8">
-            <h2 id="steps-title">איך נולד טעם</h2>
-          </div>
-          <div className="steps-track flex h-full w-max items-center gap-6 pe-[10vw] ps-4 pt-24 md:ps-8">
-            {STEPS.map((s) => (
-              <article
-                key={s.n}
-                className="relative flex h-[60svh] w-[80vw] max-w-xl shrink-0 flex-col justify-end overflow-hidden rounded-[2.5rem] p-8 md:w-[42vw]"
-                style={{ background: s.color }}
-              >
-                {s.img ? (
-                  <picture className="absolute inset-x-0 top-0 h-[58%]">
-                    <source srcSet={`/images/${s.img}.avif`} type="image/avif" />
-                    <img src={`/images/${s.img}.webp`} alt={s.alt} width={1600} height={1067} loading="lazy" className="h-full w-full object-cover" />
-                  </picture>
-                ) : (
-                  <span className="absolute end-8 top-6 font-display text-[10rem] leading-none font-black opacity-20">{s.n}</span>
-                )}
-                <div className={s.color.includes("cherry") ? "text-white" : ""}>
-                  <span className="font-display text-xl font-black opacity-60">{s.n}</span>
-                  <h3 className="mb-2 text-4xl">{s.title}</h3>
-                  <p className="max-w-sm">{s.text}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+        <LabSteps />
 
         {/* Flavors carousel */}
         <section className="py-24" aria-labelledby="flavors-title">

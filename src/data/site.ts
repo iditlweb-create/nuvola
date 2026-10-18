@@ -2,11 +2,71 @@
 
 export type BranchSlug = "tel-aviv" | "haifa" | "jerusalem";
 
-export const BRANCHES: { slug: BranchSlug; city: string; area: string; hours: string; open: boolean }[] = [
-  { slug: "tel-aviv", city: "תל אביב", area: "פלורנטין", hours: "12:00–00:00", open: true },
-  { slug: "haifa", city: "חיפה", area: "המושבה הגרמנית", hours: "12:00–23:00", open: true },
-  { slug: "jerusalem", city: "ירושלים", area: "נחלאות", hours: "12:00–23:00 · מוצ״ש עד 01:00", open: false },
+/** Opening hours per weekday (0 = Sunday … 6 = Saturday), minutes from midnight; a close past 24:00 means after midnight. null = closed. */
+type Day = [open: number, close: number] | null;
+const h = (hh: number, mm = 0) => hh * 60 + mm;
+
+export const BRANCHES: {
+  slug: BranchSlug;
+  city: string;
+  area: string;
+  address: string;
+  phone: string;
+  hours: string;
+  open: boolean;
+  week: Day[];
+  map: { x: number; y: number };
+}[] = [
+  {
+    slug: "tel-aviv",
+    city: "תל אביב",
+    area: "פלורנטין",
+    address: "רחוב וולפסון 14, פלורנטין",
+    phone: "03-5550101",
+    hours: "12:00–00:00",
+    open: true,
+    week: [[h(12), h(24)], [h(12), h(24)], [h(12), h(24)], [h(12), h(24)], [h(12), h(25)], [h(11), h(25)], [h(11), h(24)]],
+    map: { x: 58, y: 196 },
+  },
+  {
+    slug: "haifa",
+    city: "חיפה",
+    area: "המושבה הגרמנית",
+    address: "שדרות בן גוריון 21, המושבה הגרמנית",
+    phone: "04-5550202",
+    hours: "12:00–23:00",
+    open: true,
+    week: [[h(12), h(23)], [h(12), h(23)], [h(12), h(23)], [h(12), h(23)], [h(12), h(24)], [h(11), h(24)], [h(11), h(23)]],
+    map: { x: 72, y: 92 },
+  },
+  {
+    slug: "jerusalem",
+    city: "ירושלים",
+    area: "נחלאות",
+    address: "רחוב התבור 6, נחלאות",
+    phone: "02-5550303",
+    hours: "12:00–23:00 · מוצ״ש עד 01:00",
+    open: false,
+    week: [[h(12), h(23)], [h(12), h(23)], [h(12), h(23)], [h(12), h(23)], [h(12), h(23)], [h(10), h(14, 30)], [h(19), h(25)]],
+    map: { x: 112, y: 222 },
+  },
 ];
+
+export const DAY_NAMES = ["ראשון", "שני", "שלישי", "רביעי", "חמישי", "שישי", "שבת"];
+export const fmtTime = (m: number) => `${String(Math.floor(m / 60) % 24).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+
+/** Is the branch open at a given Israel-time moment? Handles closing hours after midnight. */
+export function openNow(week: Day[], date = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Jerusalem", weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(date);
+  const wd = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(parts.find((p) => p.type === "weekday")!.value);
+  const mins = Number(parts.find((p) => p.type === "hour")!.value) * 60 + Number(parts.find((p) => p.type === "minute")!.value);
+  const today = week[wd];
+  const yesterday = week[(wd + 6) % 7];
+  if (today && mins >= today[0] && mins < today[1]) return { open: true, until: today[1] };
+  if (yesterday && yesterday[1] > 1440 && mins < yesterday[1] - 1440) return { open: true, until: yesterday[1] };
+  const next = today && mins < today[0] ? today[0] : null;
+  return { open: false, next };
+}
 
 export const NAV = [
   { label: "טעמים", href: "/flavors" },

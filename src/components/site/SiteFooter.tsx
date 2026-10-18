@@ -26,7 +26,7 @@ export default function SiteFooter() {
         </div>
         <div className="flex flex-col justify-between gap-8">
           <Logo />
-          <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+          <ul className="flex flex-wrap gap-x-6 text-sm [&_a]:inline-block [&_a]:py-2.5">
             <li>
               <Link href="/accessibility">הצהרת נגישות</Link>
             </li>
